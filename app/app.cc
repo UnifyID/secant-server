@@ -10,6 +10,7 @@
 #include "http_headers.h"
 #include "cookie.h"
 #include "endpoint.h"
+#include <csignal>
 
 using namespace std;
 using namespace Net;
@@ -97,7 +98,7 @@ class MyHandler : public Net::Http::Handler {
                     std::cout << "Using chunked encoding" << std::endl;
 
                     response.headers()
-                        .add<Header::Server>("pistache/0.1")
+                        .add<Header::Server>("UnifyID/0.1")
                         .add<Header::ContentType>(MIME(Text, Plain));
 
                     response.cookies()
@@ -147,14 +148,19 @@ class MyHandler : public Net::Http::Handler {
 
 };
 
+void signalHandler( int signum ) {
+   cout << "Interrupt signal (" << signum << ") received.\n";
+   // cleanup and close up stuff here  
+   // terminate program  
+   exit(signum);  
+
+}
+
 int main(int argc, char *argv[]) {
     Net::Port port(9080);
-
     int thr = 2;
-
     if (argc >= 2) {
         port = std::stol(argv[1]);
-
         if (argc == 3)
             thr = std::stol(argv[2]);
     }
@@ -173,6 +179,9 @@ int main(int argc, char *argv[]) {
     server->init(opts);
     server->setHandler(Http::make_handler<MyHandler>());
     server->serve();
+
+    // register signal SIGINT and signal handler  
+    signal(SIGINT, signalHandler);  
 
     std::cout << "Shutdowning server" << std::endl;
     server->shutdown();

@@ -22,7 +22,7 @@ install(FILES ${SERIALIZER_HEADER_FILES} DESTINATION include/pistache/serializer
 add_subdirectory (src)
 include_directories (src)
 
-add_subdirectory (examples)
+add_subdirectory (app)
 
 find_package(GTest)
 if (GTEST_FOUND)

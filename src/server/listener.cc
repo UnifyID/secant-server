@@ -102,10 +102,8 @@ Listener::init(
     options_ = options;
     backlog_ = backlog;
 
-    if (options_.hasFlag(Options::InstallSignalHandler)) {
-        if (signal(SIGINT, handle_sigint) == SIG_ERR) {
-            throw std::runtime_error("Could not install signal handler");
-        }
+    if (signal(SIGINT, handle_sigint) == SIG_ERR) {
+        throw std::runtime_error("Could not install signal handler");
     }
 
     workers_ = workers;
