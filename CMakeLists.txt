@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.7)
 project (pistache)
 include(CheckCXXCompilerFlag)
+include(ExternalProject)
 
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
@@ -11,6 +12,15 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
+
+ExternalProject_Add(enclave
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/enclave
+  BUILD_IN_SOURCE 1
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND make
+  INSTALL_COMMAND ""
+  PREFIX=${CMAKE_CURRENT_BINARY_DIR}/enclave
+)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB HEADER_FILES "include/*.h")
