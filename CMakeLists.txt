@@ -13,14 +13,17 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-ExternalProject_Add(enclave
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/enclave
-  BUILD_IN_SOURCE 1
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND make
-  INSTALL_COMMAND ""
-  PREFIX=${CMAKE_CURRENT_BINARY_DIR}/enclave
-)
+find_path(ENCLAVE_SGX_SDK PATHS /opt/intel/sgxsdk)
+if(ENCLAVE_SGX_SDK_FOUND)
+    ExternalProject_Add(enclave
+      SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/enclave
+      BUILD_IN_SOURCE 1
+      CONFIGURE_COMMAND ""
+      BUILD_COMMAND make
+      INSTALL_COMMAND ""
+      PREFIX=${CMAKE_CURRENT_BINARY_DIR}/enclave
+    )
+endif()
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB HEADER_FILES "include/*.h")
